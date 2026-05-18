@@ -15,9 +15,15 @@ useGitignore: true
 words:
   - cibuildwheel
   - cuda
+  - liblaf
   - meshio
+  - mkdocs
   - musllinux
   - nvcc
+  - oxfmt
+  - oxlint
+  - pipx
   - pypa
   - pyproject
   - pytest
+  - rumdl
