@@ -1,0 +1,33 @@
+# ref: <https://cibuildwheel.pypa.io/en/latest/options/>
+
+[tool.cibuildwheel]
+skip = ["*-musllinux_*", "cp38-*"]
+environment-pass = ["CCACHE_DIR"]
+test-command = ["pytest '{project}'"]
+test-requires = [  # ref: <https://github.com/ipc-sim/ipc-toolkit/blob/main/python/tests/requirements.txt>
+  "meshio>=5",
+  "nose2>=0.16",
+  "pytest>=7,<8"
+]
+
+[tool.cibuildwheel.linux]
+before-all = [  # ref: <https://docs.nvidia.com/cuda/cuda-installation-guide-linux/#red-hat-enterprise-linux-almalinux-rocky-linux-oracle-linux>
+  "dnf config-manager --add-repo 'https://developer.download.nvidia.com/compute/cuda/repos/rhel8/x86_64/cuda-rhel8.repo'",
+  "dnf install --assumeyes ccache cuda-toolkit-13",
+  "nvcc --version",
+  "ccache --version",
+  "ccache --show-config"
+]
+
+# ref: <https://docs.nvidia.com/cuda/cuda-installation-guide-linux/#environment-setup>
+[tool.cibuildwheel.linux.environment]
+CUDA_HOME = "/usr/local/cuda-13"
+PATH = "$PATH:$CUDA_HOME/bin"
+LD_LIBRARY_PATH = "$LD_LIBRARY_PATH:$CUDA_HOME/lib64"
+# ref: <https://forums.developer.nvidia.com/t/link-time-optimization-with-cuda-on-linux-flto/55530/2>
+# ref: <https://github.com/ipc-sim/ipc-toolkit/blob/main/.github/workflows/cuda.yml>
+# ref: <https://pybind11.readthedocs.io/en/stable/compiling.html#pybind11-add-module>
+CMAKE_ARGS = "-D CMAKE_CUDA_ARCHITECTURES=all -D CMAKE_INTERPROCEDURAL_OPTIMIZATION=OFF -D IPC_TOOLKIT_WITH_CUDA=ON -D SCALABLE_CCD_CUDA_ARCHITECTURES=all"
+CMAKE_C_COMPILER_LAUNCHER = "ccache"
+CMAKE_CXX_COMPILER_LAUNCHER = "ccache"
+CMAKE_CUDA_COMPILER_LAUNCHER = "ccache"
