@@ -1,0 +1,15 @@
+[project]
+name = "ipctk-stubs"
+version = "1.6.0"
+requires-python = ">=3.9"
+dependencies = ["ipctk==1.6.0"]
+
+[build-system]
+requires = ["hatchling>=1.27.0", "pybind11-stubgen>=2.5.5"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.hooks.custom]
+require-runtime-dependencies = true
+
+[tool.uv]
+find-links = ["../wheelhouse/"]

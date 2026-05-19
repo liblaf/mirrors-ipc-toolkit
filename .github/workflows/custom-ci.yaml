@@ -6,19 +6,14 @@ on:
     - cron: "0 0 * * 0" # Runs at 00:00, only on Sunday
 
 jobs:
-  build:
-    name: Build
+  cibuildwheel:
+    name: cibuildwheel
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v6
         with:
-          repository: ipc-sim/ipc-toolkit
-      - name: Checkout cibuildwheel config
-        uses: actions/checkout@v6
-        with:
-          path: tmp.wbc9ar41ex
-          sparse-checkout: pyproject.toml
+          submodules: recursive
       - name: Install Ccache
         run: sudo apt-get --yes install ccache
       - id: ccache
@@ -35,7 +30,8 @@ jobs:
       - name: cibuildwheel
         uses: pypa/cibuildwheel@v3.4
         with:
-          config-file: tmp.wbc9ar41ex/pyproject.toml
+          package-dir: ipc-toolkit
+          config-file: pyproject.toml
         env:
           CCACHE_DIR: /host/${{ steps.ccache.outputs.cache_dir }}
       - name: Ccache stats
@@ -46,13 +42,33 @@ jobs:
           name: wheelhouse
           path: wheelhouse/*.whl
 
+  build-stubs:
+    name: Build stubs
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v8.1.0
+      - name: Build stubs
+        run: uvx --from 'build[uv]' python -m build --installer uv
+        working-directory: ipctk-stubs
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v7
+        with:
+          name: ipctk-stubs
+          path: |-
+            ipctk-stubs/dist/*.tar.gz
+            ipctk-stubs/dist/*.whl
+
   release:
     name: Release
     permissions:
       actions: write
       contents: write
     needs:
-      - build
+      - cibuildwheel
+      - build-stubs
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
@@ -60,7 +76,12 @@ jobs:
         uses: actions/download-artifact@v8
         with:
           name: wheelhouse
-          path: wheelhouse
+          path: dist
+      - name: Download Artifacts
+        uses: actions/download-artifact@v8
+        with:
+          name: ipctk-stubs
+          path: dist
       - name: Delete stale release
         run: gh release delete 'latest' --cleanup-tag --yes --repo '${{ github.repository }}'
         env:
@@ -70,7 +91,7 @@ jobs:
         uses: softprops/action-gh-release@v3
         with:
           tag_name: latest
-          files: wheelhouse/*.whl
+          files: dist/*
 
   index:
     name: Index
