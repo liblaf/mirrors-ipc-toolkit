@@ -1,6 +1,7 @@
 name: Custom / CI
 
 on:
+  push:
   schedule:
     - cron: "0 0 * * *" # Runs at 00:00
 
