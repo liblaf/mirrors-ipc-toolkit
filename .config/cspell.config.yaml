@@ -24,6 +24,7 @@ words:
   - oxlint
   - pipx
   - pypa
+  - pypi
   - pyproject
   - pytest
   - rumdl
