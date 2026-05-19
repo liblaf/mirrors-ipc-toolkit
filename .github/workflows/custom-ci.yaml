@@ -28,7 +28,8 @@ jobs:
         uses: actions/cache@v5
         with:
           path: ${{ steps.ccache.outputs.cache_dir }}
-          key: ccache-${{ runner.os }}-${{ runner.arch }}
+          key: ccache-${{ runner.os }}-${{ runner.arch }}-${{ github.run_id }}
+          restore-keys: ccache-${{ runner.os }}-${{ runner.arch }}-
       - name: Ccache zero stats
         run: ccache --zero-stats
       - name: cibuildwheel
