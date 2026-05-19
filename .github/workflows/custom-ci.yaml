@@ -3,7 +3,7 @@ name: Custom / CI
 on:
   push:
   schedule:
-    - cron: "0 0 * * *" # Runs at 00:00
+    - cron: "0 0 * * 0" # Runs at 00:00, only on Sunday
 
 jobs:
   build:
@@ -94,6 +94,8 @@ jobs:
         uses: astral-sh/setup-uv@v8.1.0
       - name: Build Index
         run: mise run gen:index
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
       - name: Upload GitHub Pages artifact
         uses: actions/upload-pages-artifact@v5
         with:
