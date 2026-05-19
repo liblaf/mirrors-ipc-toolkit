@@ -2,8 +2,6 @@ name: Custom / CI
 
 on:
   push:
-  schedule:
-    - cron: "0 0 * * 0" # Runs at 00:00, only on Sunday
 
 jobs:
   cibuildwheel:
@@ -43,21 +41,21 @@ jobs:
           path: wheelhouse/*.whl
 
   build-stubs:
-    name: Build stubs
+    name: Build Stubs
     needs:
       - cibuildwheel
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v6
-      - name: Download Artifacts
+      - name: Download Wheels
         uses: actions/download-artifact@v8
         with:
           name: wheelhouse
           path: wheelhouse
       - name: Setup uv
         uses: astral-sh/setup-uv@v8.1.0
-      - name: Build stubs
+      - name: Build
         run: uvx --from 'build[uv]' python -m build --installer uv
         working-directory: ipctk-stubs
       - name: Upload Artifacts
