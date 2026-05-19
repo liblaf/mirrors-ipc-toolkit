@@ -24,7 +24,7 @@ jobs:
       - id: ccache
         name: Get ccache config
         run: echo "cache_dir=$(ccache --get-config 'cache_dir')" >> "$GITHUB_OUTPUT"
-      - name: Ccache
+      - name: Cache ccache
         uses: actions/cache@v5
         with:
           path: ${{ steps.ccache.outputs.cache_dir }}
@@ -70,10 +70,6 @@ jobs:
         with:
           tag_name: latest
           files: wheelhouse/*.whl
-      - name: Build Index
-        run: gh workflow run 'custom-index.yaml' --repo '${{ github.repository }}'
-        env:
-          GH_TOKEN: ${{ github.token }}
 
   index:
     name: Index
