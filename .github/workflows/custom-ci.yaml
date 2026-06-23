@@ -18,7 +18,7 @@ jobs:
         name: Get ccache config
         run: echo "cache_dir=$(ccache --get-config 'cache_dir')" >> "$GITHUB_OUTPUT"
       - name: Cache ccache
-        uses: actions/cache@v5
+        uses: actions/cache@2c8a9bd7457de244a408f35966fab2fb45fda9c8 # v6
         with:
           path: ${{ steps.ccache.outputs.cache_dir }}
           key: ccache-${{ runner.os }}-${{ runner.arch }}-${{ github.run_id }}
