@@ -115,7 +115,7 @@ jobs:
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v6
       - name: Install mise
-        uses: jdx/mise-action@v4
+        uses: jdx/mise-action@7a4e45a543138629540c9a1616d08632b893e492 # v5
       - name: Setup uv
         uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
       - name: Build Index
