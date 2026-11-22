@@ -26,7 +26,7 @@ jobs:
       - name: Ccache zero stats
         run: ccache --zero-stats
       - name: cibuildwheel
-        uses: pypa/cibuildwheel@294735312765b09d24a2fbec22660ce817587d55 # v4.1
+        uses: pypa/cibuildwheel@f9b966cfadf4109556cadc5bb39ddb72d0ce664e # v4.3
         with:
           package-dir: ipc-toolkit
           config-file: pyproject.toml
